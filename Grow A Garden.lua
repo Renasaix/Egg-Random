@@ -1,7 +1,7 @@
 --[[
-  Grow A Garden - Visual Egg Pet Randomizer (Manual Egg Selection)
-  Author: Renasaix
-  Note: This is a client-side visual feature and does not interact with the game's mechanics.
+  Grow A Garden - Enhanced Visual Egg Pet Randomizer UI
+  Author: Renasaix (UI Redesign and Functional Enhancements)
+  Note: This UI visually simulates egg pet randomization. It does not affect game mechanics.
 ]]
 
 local Players = game:GetService("Players")
@@ -24,85 +24,91 @@ local eggs = {
 local selectedEgg = "Bug Egg"
 local autoRandomize = true
 local autoStop = false
-local countdown = 10
+local countdown = 5
 
 -- Create ScreenGui
 local gui = Instance.new("ScreenGui")
-gui.Name = "EggRandomizerGUI"
+gui.Name = "EggVisualizerUI"
 gui.ResetOnSpawn = false
 gui.Parent = playerGui
 
 -- Main Frame (Draggable)
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 280, 0, 250)
-frame.Position = UDim2.new(0.7, 0, 0.1, 0)
-frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-frame.BorderSizePixel = 0
+frame.Size = UDim2.new(0, 350, 0, 400)
+frame.Position = UDim2.new(0.5, -175, 0.5, -200)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 frame.BackgroundTransparency = 0
-frame.Name = "EggRandomizerFrame"
-frame.Parent = gui
+frame.BorderSizePixel = 0
 frame.Active = true
 frame.Draggable = true
-frame.ClipsDescendants = true
-frame.AnchorPoint = Vector2.new(0.5, 0.5)
-frame.Position = UDim2.new(0.5, 0, 0.5, 0)
-frame.BackgroundTransparency = 0.1
-frame.BorderMode = Enum.BorderMode.Inset
+frame.Parent = gui
 
--- Dropdown Menu (Egg Selector)
-local dropdown = Instance.new("TextButton")
-dropdown.Size = UDim2.new(1, -20, 0, 30)
-dropdown.Position = UDim2.new(0, 10, 0, 10)
-dropdown.Text = "Selected Egg: " .. selectedEgg
-dropdown.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-dropdown.TextColor3 = Color3.new(1, 1, 1)
-dropdown.Font = Enum.Font.GothamBold
-dropdown.TextScaled = true
-dropdown.Parent = frame
+-- Title Label
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 40)
+title.BackgroundTransparency = 1
+title.Text = "🥚 Egg Pet Visualizer 🐾"
+title.TextColor3 = Color3.new(1, 1, 1)
+title.Font = Enum.Font.GothamBold
+title.TextScaled = true
+title.Parent = frame
 
--- List of Egg Buttons
-local eggListFrame = Instance.new("ScrollingFrame")
-eggListFrame.Size = UDim2.new(1, -20, 0, 100)
-eggListFrame.Position = UDim2.new(0, 10, 0, 45)
-eggListFrame.BackgroundTransparency = 1
-eggListFrame.ScrollBarThickness = 5
-eggListFrame.CanvasSize = UDim2.new(0, 0, 0, #eggs * 25)
-eggListFrame.Parent = frame
+-- Dropdown Egg Selector
+local selector = Instance.new("TextButton")
+selector.Size = UDim2.new(1, -20, 0, 30)
+selector.Position = UDim2.new(0, 10, 0, 50)
+selector.Text = "Select Egg: " .. selectedEgg
+selector.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+selector.TextColor3 = Color3.new(1, 1, 1)
+selector.Font = Enum.Font.GothamSemibold
+selector.TextScaled = true
+selector.Parent = frame
 
-table.foreach(eggs, function(eggName, _) 
-    local eggBtn = Instance.new("TextButton")
-    eggBtn.Size = UDim2.new(1, 0, 0, 25)
-    eggBtn.Text = eggName
-    eggBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-    eggBtn.TextColor3 = Color3.new(1, 1, 1)
-    eggBtn.Font = Enum.Font.SourceSans
-    eggBtn.TextScaled = true
-    eggBtn.Parent = eggListFrame
-    eggBtn.MouseButton1Click:Connect(function()
+-- Egg Selection Menu
+local menu = Instance.new("ScrollingFrame")
+menu.Size = UDim2.new(1, -20, 0, 130)
+menu.Position = UDim2.new(0, 10, 0, 90)
+menu.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+menu.ScrollBarThickness = 6
+menu.CanvasSize = UDim2.new(0, 0, 0, 25 * #eggs)
+menu.Parent = frame
+
+local y = 0
+for eggName, _ in pairs(eggs) do
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, 0, 0, 25)
+    btn.Position = UDim2.new(0, 0, 0, y)
+    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    btn.TextColor3 = Color3.new(1, 1, 1)
+    btn.Font = Enum.Font.Gothamtn.TextScaled = true
+    btn.Text = eggName
+    btn.Parent = menu
+    btn.MouseButton1Click:Connect(function()
         selectedEgg = eggName
-        dropdown.Text = "Selected Egg: " .. selectedEgg
+        selector.Text = "Select Egg: " .. selectedEgg
     end)
-end)
+    y = y + 25
+end
 
--- Pet Display
-local petLabel = Instance.new("TextLabel")
-petLabel.Size = UDim2.new(1, -20, 0, 30)
-petLabel.Position = UDim2.new(0, 10, 0.7, 0)
-petLabel.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-petLabel.TextColor3 = Color3.new(1, 1, 1)
-petLabel.Font = Enum.Font.GothamSemibold
-petLabel.TextScaled = true
-petLabel.Text = "Random Pet: ???"
-petLabel.Parent = frame
+-- Pet Visual Output
+local output = Instance.new("TextLabel")
+output.Size = UDim2.new(1, -20, 0, 60)
+output.Position = UDim2.new(0, 10, 0, 230)
+output.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+output.TextColor3 = Color3.new(1, 1, 1)
+output.Font = Enum.Font.GothamBold
+output.TextScaled = true
+output.Text = "Random Pet: ???"
+output.Parent = frame
 
--- Auto UI Toggle
+-- Controls
 local autoBtn = Instance.new("TextButton")
-autoBtn.Size = UDim2.new(0.48, -5, 0, 25)
-autoBtn.Position = UDim2.new(0, 10, 1, -35)
+autoBtn.Size = UDim2.new(0.48, -5, 0, 30)
+autoBtn.Position = UDim2.new(0, 10, 0, 300)
 autoBtn.Text = "Auto: ON"
 autoBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 autoBtn.TextColor3 = Color3.new(1, 1, 1)
-autoBtn.Font = Enum.Font.SourceSans
+autoBtn.Font = Enum.Font.Gotham
 autoBtn.TextScaled = true
 autoBtn.Parent = frame
 autoBtn.MouseButton1Click:Connect(function()
@@ -110,19 +116,44 @@ autoBtn.MouseButton1Click:Connect(function()
     autoBtn.Text = "Auto: " .. (autoRandomize and "ON" or "OFF")
 end)
 
--- Stop Toggle
 local stopBtn = Instance.new("TextButton")
-stopBtn.Size = UDim2.new(0.48, -5, 0, 25)
-stopBtn.Position = UDim2.new(0.52, 0, 1, -35)
+stopBtn.Size = UDim2.new(0.48, -5, 0, 30)
+stopBtn.Position = UDim2.new(0.52, 0, 0, 300)
 stopBtn.Text = "Auto Stop: OFF"
 stopBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 stopBtn.TextColor3 = Color3.new(1, 1, 1)
-stopBtn.Font = Enum.Font.SourceSans
+stopBtn.Font = Enum.Font.Gotham
 stopBtn.TextScaled = true
 stopBtn.Parent = frame
 stopBtn.MouseButton1Click:Connect(function()
     autoStop = not autoStop
     stopBtn.Text = "Auto Stop: " .. (autoStop and "ON" or "OFF")
+end)
+
+-- Countdown Timer (slider)
+local countdownLabel = Instance.new("TextLabel")
+countdownLabel.Size = UDim2.new(1, -20, 0, 25)
+countdownLabel.Position = UDim2.new(0, 10, 0, 340)
+countdownLabel.BackgroundTransparency = 1
+countdownLabel.Text = "Timer: " .. countdown .. "s"
+countdownLabel.TextColor3 = Color3.new(1, 1, 1)
+countdownLabel.Font = Enum.Font.Gotham
+countdownLabel.TextScaled = true
+countdownLabel.Parent = frame
+
+local countdownBtn = Instance.new("TextButton")
+countdownBtn.Size = UDim2.new(1, -20, 0, 25)
+countdownBtn.Position = UDim2.new(0, 10, 0, 370)
+countdownBtn.Text = "Increase Timer (Current: ".. countdown .."s)"
+countdownBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+countdownBtn.TextColor3 = Color3.new(1, 1, 1)
+countdownBtn.Font = Enum.Font.Gotham
+countdownBtn.TextScaled = true
+countdownBtn.Parent = frame
+countdownBtn.MouseButton1Click:Connect(function()
+    countdown = countdown + 1
+    countdownLabel.Text = "Timer: " .. countdown .. "s"
+    countdownBtn.Text = "Increase Timer (Current: ".. countdown .."s)"
 end)
 
 -- Randomizer Loop
@@ -132,9 +163,9 @@ spawn(function()
             local pets = eggs[selectedEgg] or {}
             if #pets > 0 then
                 local randomPet = pets[math.random(1, #pets)]
-                petLabel.Text = "Random Pet: " .. randomPet
+                output.Text = "Random Pet: " .. randomPet
             else
-                petLabel.Text = "No pets for selected egg"
+                output.Text = "No pets for selected egg"
             end
             if autoStop then autoRandomize = false end
         end
