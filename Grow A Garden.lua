@@ -21,7 +21,6 @@ local eggs = {
     ["Oasis Egg"] = {"Meerkat", "Sand Snake", "Axolotl", "Hyacinth Macaw", "Fennec Fox"},
 }
 
--- Initial selected egg type
 local selectedEgg = "Bug Egg"
 local autoRandomize = true
 local autoStop = false
@@ -33,39 +32,48 @@ gui.Name = "EggRandomizerGUI"
 gui.ResetOnSpawn = false
 gui.Parent = playerGui
 
--- Main Frame
+-- Main Frame (Draggable)
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 250, 0, 180)
+frame.Size = UDim2.new(0, 280, 0, 250)
 frame.Position = UDim2.new(0.7, 0, 0.1, 0)
-frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 frame.BorderSizePixel = 0
-frame.BackgroundTransparency = 0.2
+frame.BackgroundTransparency = 0
 frame.Name = "EggRandomizerFrame"
 frame.Parent = gui
+frame.Active = true
+frame.Draggable = true
+frame.ClipsDescendants = true
+frame.AnchorPoint = Vector2.new(0.5, 0.5)
+frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+frame.BackgroundTransparency = 0.1
+frame.BorderMode = Enum.BorderMode.Inset
 
 -- Dropdown Menu (Egg Selector)
 local dropdown = Instance.new("TextButton")
 dropdown.Size = UDim2.new(1, -20, 0, 30)
 dropdown.Position = UDim2.new(0, 10, 0, 10)
 dropdown.Text = "Selected Egg: " .. selectedEgg
-dropdown.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+dropdown.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
 dropdown.TextColor3 = Color3.new(1, 1, 1)
-dropdown.Font = Enum.Font.SourceSansBold
+dropdown.Font = Enum.Font.GothamBold
 dropdown.TextScaled = true
 dropdown.Parent = frame
 
 -- List of Egg Buttons
-local eggListFrame = Instance.new("Frame")
-eggListFrame.Size = UDim2.new(1, -20, 0, 80)
+local eggListFrame = Instance.new("ScrollingFrame")
+eggListFrame.Size = UDim2.new(1, -20, 0, 100)
 eggListFrame.Position = UDim2.new(0, 10, 0, 45)
 eggListFrame.BackgroundTransparency = 1
+eggListFrame.ScrollBarThickness = 5
+eggListFrame.CanvasSize = UDim2.new(0, 0, 0, #eggs * 25)
 eggListFrame.Parent = frame
 
-for eggName, _ in pairs(eggs) do
+table.foreach(eggs, function(eggName, _) 
     local eggBtn = Instance.new("TextButton")
-    eggBtn.Size = UDim2.new(1, 0, 0, 20)
+    eggBtn.Size = UDim2.new(1, 0, 0, 25)
     eggBtn.Text = eggName
-    eggBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    eggBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
     eggBtn.TextColor3 = Color3.new(1, 1, 1)
     eggBtn.Font = Enum.Font.SourceSans
     eggBtn.TextScaled = true
@@ -74,15 +82,15 @@ for eggName, _ in pairs(eggs) do
         selectedEgg = eggName
         dropdown.Text = "Selected Egg: " .. selectedEgg
     end)
-end
+end)
 
 -- Pet Display
 local petLabel = Instance.new("TextLabel")
 petLabel.Size = UDim2.new(1, -20, 0, 30)
 petLabel.Position = UDim2.new(0, 10, 0.7, 0)
-petLabel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+petLabel.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 petLabel.TextColor3 = Color3.new(1, 1, 1)
-petLabel.Font = Enum.Font.SourceSansBold
+petLabel.Font = Enum.Font.GothamSemibold
 petLabel.TextScaled = true
 petLabel.Text = "Random Pet: ???"
 petLabel.Parent = frame
@@ -125,6 +133,8 @@ spawn(function()
             if #pets > 0 then
                 local randomPet = pets[math.random(1, #pets)]
                 petLabel.Text = "Random Pet: " .. randomPet
+            else
+                petLabel.Text = "No pets for selected egg"
             end
             if autoStop then autoRandomize = false end
         end
