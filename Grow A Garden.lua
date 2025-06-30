@@ -1,7 +1,11 @@
 --[[
-  Grow A Garden - Enhanced Visual Egg Pet Randomizer UI
-  Author: Renasaix (UI Redesign and Functional Enhancements)
-  Note: This UI visually simulates egg pet randomization. It does not affect game mechanics.
+  Grow A Garden - Visual Egg Pet Randomizer UI
+  Author: Renasaix
+  Features:
+  ✅ Movable, clean UI with soft edges
+  ✅ Dropdown for selecting eggs
+  ✅ Auto-random toggle and timer
+  ✅ Pet results are visual-only (does not affect gameplay)
 ]]
 
 local Players = game:GetService("Players")
@@ -26,24 +30,20 @@ local autoRandomize = true
 local autoStop = false
 local countdown = 5
 
--- Create ScreenGui
+-- Create UI
 local gui = Instance.new("ScreenGui")
 gui.Name = "EggVisualizerUI"
 gui.ResetOnSpawn = false
-gui.Parent = playerGui
 
--- Main Frame (Draggable)
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0, 350, 0, 400)
 frame.Position = UDim2.new(0.5, -175, 0.5, -200)
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-frame.BackgroundTransparency = 0
 frame.BorderSizePixel = 0
 frame.Active = true
 frame.Draggable = true
 frame.Parent = gui
 
--- Title Label
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 40)
 title.BackgroundTransparency = 1
@@ -53,7 +53,6 @@ title.Font = Enum.Font.GothamBold
 title.TextScaled = true
 title.Parent = frame
 
--- Dropdown Egg Selector
 local selector = Instance.new("TextButton")
 selector.Size = UDim2.new(1, -20, 0, 30)
 selector.Position = UDim2.new(0, 10, 0, 50)
@@ -64,7 +63,6 @@ selector.Font = Enum.Font.GothamSemibold
 selector.TextScaled = true
 selector.Parent = frame
 
--- Egg Selection Menu
 local menu = Instance.new("ScrollingFrame")
 menu.Size = UDim2.new(1, -20, 0, 130)
 menu.Position = UDim2.new(0, 10, 0, 90)
@@ -80,7 +78,8 @@ for eggName, _ in pairs(eggs) do
     btn.Position = UDim2.new(0, 0, 0, y)
     btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     btn.TextColor3 = Color3.new(1, 1, 1)
-    btn.Font = Enum.Font.Gothamtn.TextScaled = true
+    btn.Font = Enum.Font.Gotham
+    btn.TextScaled = true
     btn.Text = eggName
     btn.Parent = menu
     btn.MouseButton1Click:Connect(function()
@@ -90,7 +89,6 @@ for eggName, _ in pairs(eggs) do
     y = y + 25
 end
 
--- Pet Visual Output
 local output = Instance.new("TextLabel")
 output.Size = UDim2.new(1, -20, 0, 60)
 output.Position = UDim2.new(0, 10, 0, 230)
@@ -101,7 +99,6 @@ output.TextScaled = true
 output.Text = "Random Pet: ???"
 output.Parent = frame
 
--- Controls
 local autoBtn = Instance.new("TextButton")
 autoBtn.Size = UDim2.new(0.48, -5, 0, 30)
 autoBtn.Position = UDim2.new(0, 10, 0, 300)
@@ -130,7 +127,6 @@ stopBtn.MouseButton1Click:Connect(function()
     stopBtn.Text = "Auto Stop: " .. (autoStop and "ON" or "OFF")
 end)
 
--- Countdown Timer (slider)
 local countdownLabel = Instance.new("TextLabel")
 countdownLabel.Size = UDim2.new(1, -20, 0, 25)
 countdownLabel.Position = UDim2.new(0, 10, 0, 340)
@@ -156,7 +152,9 @@ countdownBtn.MouseButton1Click:Connect(function()
     countdownBtn.Text = "Increase Timer (Current: ".. countdown .."s)"
 end)
 
--- Randomizer Loop
+-- Start GUI after setup
+gui.Parent = playerGui
+
 spawn(function()
     while true do
         if autoRandomize then
